@@ -12,6 +12,9 @@ metal ssh-key get
 Retrieve a specific SSH key:
 metal ssh-key get --id [ssh-key_UUID] 
 
+Retrieve all project SSH keys 
+metal ssh-key get --project-id [project_UUID]
+
 
 
 ```
@@ -21,8 +24,9 @@ metal ssh-key get [flags]
 ### Options
 
 ```
-  -h, --help        help for get
-  -i, --id string   UUID of the SSH key
+  -h, --help                help for get
+  -i, --id string           UUID of the SSH key
+  -p, --project-id string   List SSH Keys for the project identified by Project ID
 ```
 
 ### Options inherited from parent commands

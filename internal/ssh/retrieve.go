@@ -21,6 +21,9 @@
 package ssh
 
 import (
+	"fmt"
+
+	"github.com/packethost/packngo"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -44,10 +47,27 @@ metal ssh-key get
 Retrieve a specific SSH key:
 metal ssh-key get --id [ssh-key_UUID] 
 
+Retrieve all project SSH keys 
+metal ssh-key get --project-id [project_UUID]
+
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if sshKeyID == "" {
-				sshKeys, _, err := c.Service.List()
+				projectID, _ := cmd.LocalFlags().GetString("project-id")
+				fmt.Println(cmd.LocalFlags())
+				listFn := func() ([]packngo.SSHKey, *packngo.Response, error) {
+					fmt.Println("foooo")
+					return c.Service.List()
+				}
+
+				if projectID != "" && cmd.Flag("project-id").Changed {
+					listFn = func() ([]packngo.SSHKey, *packngo.Response, error) {
+						fmt.Println("baaar")
+						return c.Service.ProjectList(projectID)
+					}
+				}
+				sshKeys, _, err := listFn()
+
 				if err != nil {
 					return errors.Wrap(err, "Could not list SSH Keys")
 				}
@@ -76,6 +96,7 @@ metal ssh-key get --id [ssh-key_UUID]
 		},
 	}
 
+	retrieveSSHKeysCmd.Flags().StringP("project-id", "p", "", "List SSH Keys for the project identified by Project ID")
 	retrieveSSHKeysCmd.Flags().StringVarP(&sshKeyID, "id", "i", "", "UUID of the SSH key")
 	return retrieveSSHKeysCmd
 }
