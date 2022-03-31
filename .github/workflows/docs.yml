@@ -14,18 +14,18 @@ jobs:
       matrix:
         go: [ '1.16' ]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 1
     - name: Restore Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       id: cache
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - uses: actions/setup-go@v1
+    - uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go }}
     - run: mkdir -p ~/.config/equinix
